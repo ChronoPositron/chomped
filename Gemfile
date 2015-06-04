@@ -23,6 +23,9 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
+# Simple tool to generate YouTube-like ids from a number.
+gem 'hashids', '~> 1.0'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -55,6 +58,9 @@ group :development, :test do
   gem 'simplecov', '~> 0.10'
   gem 'codecov', '~> 0.0.8', :require => false
   gem 'codeclimate-test-reporter', '~> 0.4'
+
+  # Automatically run changed specs
+  gem 'guard-rspec', '~> 4.5', require: false
 
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'
