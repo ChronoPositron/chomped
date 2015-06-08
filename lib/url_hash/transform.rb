@@ -1,0 +1,62 @@
+require 'url_hash/cleanup'
+require 'damm/algorithm'
+require 'hashids'
+
+module UrlHash
+  class Transform
+    DEFAULT_ADDRESS_SPACE = '0123456890abcdfghijknprstuvwxyzACEGHJKLMNPQRUVWXY'.freeze
+    DEFAULT_TRANSCRIPTIONS = [['lIT7', '1'], ['oOD', '0'], ['ZFqBmSe', '2Eg8n5c']].freeze
+    MINIMUM_ENCODED_LENGTH = 6
+
+    attr_reader :address_space
+    attr_reader :transcriptions
+    attr_reader :cleanup
+    attr_reader :checksum_algorithm
+
+    def initialize(salt, address_space = DEFAULT_ADDRESS_SPACE, transcriptions = DEFAULT_TRANSCRIPTIONS)
+      transcriptions ||= []
+      address_space ||= ''
+
+      @address_space = address_space
+      @transcriptions = transcriptions
+      @cleanup = UrlHash::Cleanup.new(address_space, transcriptions)
+      @checksum_algorithm = Damm::Algorithm.new(address_space.size)
+      @hasher = Hashids.new(salt, MINIMUM_ENCODED_LENGTH - 1, @address_space)
+    end
+
+    # Convert the given string from characters to an array of code points.
+    # Code points are the numeric index of the specified character within
+    # the address space. So given an address space of 'abcd', 'a' has a code
+    # point of 0, and 'd' has a code point of 3.
+    def to_code_points(string)
+      cleanup.scrub(string).chars.map { |c| address_space.index(c) }
+    end
+
+    # Convert from numeric code points to a string
+    def from_code_points(array)
+      [*array].map { |c| address_space[c] }.join('')
+    end
+
+    # Add a check character on the end of the input string
+    def add_check(string)
+      check_character = checksum_algorithm.calculate(to_code_points(string))
+      string + from_code_points(check_character)
+    end
+
+    # Remove the check character from the end of the string if it's valid
+    def remove_check(string)
+      string[0..-2] if checksum_algorithm.valid?(to_code_points(string))
+    end
+
+    # Encode a given id into a checked, randomized string
+    def encode(id)
+      add_check(@hasher.encode([id]))
+    end
+
+    # Decode a given checked string into its id
+    # but only if it's valid. Return nil on invalid strings.
+    def decode(string)
+      @hasher.decode(remove_check(string))[0]
+    end
+  end
+end
