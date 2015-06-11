@@ -1,4 +1,14 @@
 Rails.application.routes.draw do
+  resources :urls, param: :hash_url, only: [:index, :show, :new, :create] do
+    member do
+      get :delete
+      delete :delete, to: 'urls#destroy'
+    end
+  end
+
+  get '/:hash_url+', to: 'urls#show', hash_url: /\w{6,}/, as: 'details'
+  get '/:hash_url', to: 'urls#redirect', hash_url: /\w{6,}/, as: 'shortened'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

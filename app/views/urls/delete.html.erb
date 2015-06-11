@@ -1,0 +1,28 @@
+<h1>Delete Url</h1>
+
+<p>Are you sure you want to proceed? If so, please provide the deletion token.</p>
+
+<%= form_for @url, url: delete_url_path(@url), method: :delete do |f| %>
+  <% if @url.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@url.errors.count, "error") %> prohibited this url from being saved:</h2>
+
+      <ul>
+      <% @url.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :delete_token_confirmation %><br>
+    <%= f.text_field :delete_token_confirmation %>
+  </div>
+  <div class='actions'>
+    <%= f.submit 'Confirm delete', data: { confirm: 'Are you sure?' } %>
+  </div>
+<% end %>
+
+<%= link_to 'Show', @url %> |
+<%= link_to 'Back', urls_path %>

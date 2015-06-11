@@ -20,4 +20,14 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  errors: &errors
+    messages:
+      bad_uri: is an invalid url
+      bad_protocol: must start with %{protocols}
+      bad_delete_token: is an invalid delete token
+  activemodel:
+    errors:
+      <<: *errors
+  activerecord:
+    errors:
+      <<: *errors

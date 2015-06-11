@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Chomped Url: <%= link_to shortened_url(@url), shortened_url(@url) %></h1>
+
+<p>
+  <strong>Original:</strong>
+  <%= @url.original %>
+</p>
+
+<p>
+  <strong>Views:</strong>
+  <%= @url.views %>
+</p>
+
+<%= link_to 'Back', urls_path %>
