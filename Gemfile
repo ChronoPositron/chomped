@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.1'
 # Use sqlite3 as the database for Active Record
@@ -26,6 +25,12 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Simple tool to generate YouTube-like ids from a number.
 gem 'hashids', '~> 1.0'
 
+# Backport of the new has_secure_token from Rails 5 edge
+gem 'has_secure_token', '~> 1.0'
+
+# This gem will help with validation of the provided url
+gem 'addressable', '~> 2.3'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -46,7 +51,7 @@ group :development, :test do
   gem 'capybara', '~> 2.0'
 
   # FactoryGirl to make factories to help with testing data
-  gem 'factory_girl', '~> 4.0'
+  gem 'factory_girl_rails', '~> 4.0'
 
   # Some additional commonly used matchers
   gem 'shoulda-matchers', '~> 2.0'
@@ -56,7 +61,7 @@ group :development, :test do
 
   # Code coverage checker and formatters
   gem 'simplecov', '~> 0.10'
-  gem 'codecov', '~> 0.0.8', :require => false
+  gem 'codecov', '~> 0.0.8', require: false
   gem 'codeclimate-test-reporter', '~> 0.4'
 
   # Automatically run changed specs
@@ -65,7 +70,10 @@ group :development, :test do
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'
 
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  # Spring speeds up development by keeping your application running in the background.
+  # Read more: https://github.com/rails/spring
   gem 'spring'
-end
 
+  # Keep the code in order
+  gem 'rubocop', '~> 0.32'
+end
