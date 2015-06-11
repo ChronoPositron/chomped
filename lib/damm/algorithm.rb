@@ -17,7 +17,7 @@ module Damm
     # The resultant value is the check digit and should be appended
     # on the end of the input.
     def calculate(input)
-      input.inject(0) { |interim, digit| table[interim][digit] }
+      input.reduce(0) { |a, e| table[a][e] }
     end
 
     def valid?(input)

@@ -23,17 +23,18 @@ RSpec.describe UrlHash::Transform do
   describe '#to_code_points' do
     context 'given a valid string' do
       it 'should convert numbers' do
-        expect(default_transform.to_code_points('01234')).to eq([0,1,2,3,4])
+        expect(default_transform.to_code_points('01234')).to eq([0, 1, 2, 3, 4])
       end
 
       it 'should work with characters' do
-        expect(default_transform.to_code_points('CLEAN')).to eq([32,38,33,31,40])
+        expect(default_transform.to_code_points('CLEAN')).to eq([32, 38, 33, 31, 40])
       end
     end
 
     context 'given a string with invalid characters' do
       it 'should cleanup string and then convert' do
-        expect(default_transform.to_code_points('Test this!')).to eq([1,12,23,24,24,16,17,23])
+        expect(default_transform.to_code_points('Test this!'))
+          .to eq([1, 12, 23, 24, 24, 16, 17, 23])
       end
     end
   end
@@ -41,11 +42,11 @@ RSpec.describe UrlHash::Transform do
   describe '#from_code_points' do
     context 'given valid array' do
       it 'should convert numbers' do
-        expect(default_transform.from_code_points([0,1,2,3,4])).to eq('01234')
+        expect(default_transform.from_code_points([0, 1, 2, 3, 4])).to eq('01234')
       end
 
       it 'should work with characters' do
-        expect(default_transform.from_code_points([32,38,33,31,40])).to eq('CLEAN')
+        expect(default_transform.from_code_points([32, 38, 33, 31, 40])).to eq('CLEAN')
       end
     end
 

@@ -8,18 +8,18 @@ RSpec.describe Damm::Tables do
     # The standard example size
     it 'should work for order 10' do
       table = damm_tables.new.get_tas_table(10)
-      expect(table.inject(0) { |sum, i| sum + i.size }).to eq(100)
+      expect(table.reduce(0) { |a, e| a + e.size }).to eq(100)
     end
 
     # The size we use is also included
     it 'should work for order 49' do
       table = damm_tables.new.get_tas_table(49)
-      expect(table.inject(0) { |sum, i| sum + i.size }).to eq(2401)
+      expect(table.reduce(0) { |a, e| a + e.size }).to eq(2401)
     end
 
     it 'should work for order 17' do
       table = damm_tables.new.get_tas_table(17)
-      expect(table.inject(0) { |sum, i| sum + i.size }).to eq(289)
+      expect(table.reduce(0) { |a, e| a + e.size }).to eq(289)
     end
 
     # This size doesn't work. Damm's dissertation is for order n =/= 2,6

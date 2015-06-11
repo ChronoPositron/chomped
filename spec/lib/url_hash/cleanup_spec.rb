@@ -3,7 +3,7 @@ require 'url_hash/cleanup'
 
 RSpec.describe UrlHash::Cleanup do
   def with_cleanup(address_space = '0123456890abcdfghijknprstuvwxyzACEGHJKLMNPQRUVWXY',
-                   transcriptions = [['lIT7', '1'], ['oOD', '0'], ['ZFqBmSe', '2Eg8n5c']])
+                   transcriptions = [%w(lIT7 1), %w(oOD 0), %w(ZFqBmSe 2Eg8n5c)])
     cleanup = UrlHash::Cleanup.new(address_space, transcriptions)
     yield(cleanup)
   end
@@ -39,7 +39,7 @@ RSpec.describe UrlHash::Cleanup do
 
     context 'given a basic set of options' do
       it 'should convert to numbers' do
-        with_cleanup('0123456789', [['abcd','1234']]) do |cleanup|
+        with_cleanup('0123456789', [%w(abcd 1234)]) do |cleanup|
           expect(cleanup.replace_transcription_errors('abcd5678')).to eq('12345678')
         end
       end
@@ -111,13 +111,13 @@ RSpec.describe UrlHash::Cleanup do
   describe '#character_overlaps?' do
     context 'given no overlaps' do
       it 'should find no overlaps' do
-        expect(UrlHash::Cleanup.character_overlaps?('1234', [['abcd', '1234']])).to be false
+        expect(UrlHash::Cleanup.character_overlaps?('1234', [%w(abcd 1234)])).to be false
       end
     end
 
     context 'given overlaps' do
       it 'should find overlap' do
-        expect(UrlHash::Cleanup.character_overlaps?('1234', [['1234', 'abcd']])).to be true
+        expect(UrlHash::Cleanup.character_overlaps?('1234', [%w(1234 abcd)])).to be true
       end
     end
   end
@@ -125,7 +125,7 @@ RSpec.describe UrlHash::Cleanup do
   describe '#initialize' do
     context 'given an overlapping set of arguments' do
       it 'should raise an exception' do
-        expect { UrlHash::Cleanup.new('1234', [['1234', 'abcd']]) }.to raise_error(ArgumentError)
+        expect { UrlHash::Cleanup.new('1234', [%w(1234 abcd)]) }.to raise_error(ArgumentError)
       end
     end
   end

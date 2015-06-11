@@ -5,7 +5,7 @@ require 'hashids'
 module UrlHash
   class Transform
     DEFAULT_ADDRESS_SPACE = '0123456890abcdfghijknprstuvwxyzACEGHJKLMNPQRUVWXY'.freeze
-    DEFAULT_TRANSCRIPTIONS = [['lIT7', '1'], ['oOD', '0'], ['ZFqBmSe', '2Eg8n5c']].freeze
+    DEFAULT_TRANSCRIPTIONS = [%w(lIT7 1), %w(oOD 0), %w(ZFqBmSe 2Eg8n5c)].freeze
     MINIMUM_ENCODED_LENGTH = 6
 
     attr_reader :address_space
