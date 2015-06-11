@@ -13,9 +13,9 @@ module UrlHash
     attr_reader :cleanup
     attr_reader :checksum_algorithm
 
-    def initialize(salt, address_space = DEFAULT_ADDRESS_SPACE, transcriptions = DEFAULT_TRANSCRIPTIONS)
-      transcriptions ||= []
-      address_space ||= ''
+    def initialize(salt, options = {})
+      address_space = options[:address_space] || DEFAULT_ADDRESS_SPACE
+      transcriptions = options[:transcriptions] || DEFAULT_TRANSCRIPTIONS
 
       @address_space = address_space
       @transcriptions = transcriptions
@@ -44,8 +44,10 @@ module UrlHash
     end
 
     # Remove the check character from the end of the string if it's valid
+    # and clean the string, providing a good string on success, and nothing
+    # on failure.
     def remove_check(string)
-      string[0..-2] if checksum_algorithm.valid?(to_code_points(string))
+      cleanup.scrub(string[0..-2]) if checksum_algorithm.valid?(to_code_points(string))
     end
 
     # Encode a given id into a checked, randomized string

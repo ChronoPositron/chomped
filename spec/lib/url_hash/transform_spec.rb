@@ -6,8 +6,8 @@ RSpec.describe UrlHash::Transform do
     UrlHash::Transform.new('this is my salt')
   end
 
-  def custom_transform(address_space, transcriptions)
-    UrlHash::Transform.new('this is my salt', address_space, transcriptions)
+  def custom_transform(adspace, trns)
+    UrlHash::Transform.new('this is my salt', address_space: adspace, transcriptions: trns)
   end
 
   describe '#initialize' do
@@ -70,20 +70,21 @@ RSpec.describe UrlHash::Transform do
       end
     end
 
-    context 'given nil for transcriptions' do
+    context 'given no transcriptions' do
       it 'should add a good check character using no transcriptions' do
-        expect(custom_transform('0123456789abcdefg', nil).add_check('572')).to eq('5720')
+        expect(custom_transform('0123456789abcdefg', []).add_check('572')).to eq('5720')
       end
     end
 
-    context 'given nil for address space' do
-      it 'should use a blank address space, thus failing for not having a valid order size' do
-        expect { custom_transform(nil, nil).add_check('') }.to raise_error(Damm::Tables::TableMissingError)
+    context 'given a blank address space' do
+      it 'should fail for not having a valid order size' do
+        expect { custom_transform('', nil).add_check('') }
+          .to raise_error(Damm::Tables::TableMissingError)
       end
     end
   end
 
-  describe '#valid_check?' do
+  describe '#remove_check' do
     context 'given a valid string' do
       it 'should succeed' do
         expect(default_transform.remove_check('CLEANJ')).to eq('CLEAN')
@@ -99,12 +100,22 @@ RSpec.describe UrlHash::Transform do
         expect(default_transform.remove_check('CLEANK')).to be_nil
       end
     end
+
+    context 'there\'s a transcription error' do
+      it 'should replace the transcription error and succeed' do
+        expect(default_transform.remove_check('CLFANJ')).to eq('CLEAN')
+      end
+    end
   end
 
   describe '#encode' do
     context 'given an id' do
       it 'should encode and add a check character' do
         expect(default_transform.encode(1)).to eq('bVy2QH')
+      end
+
+      it 'should encode the answer and add a check character' do
+        expect(default_transform.encode(42)).to eq('V8k4AH')
       end
     end
   end
@@ -115,8 +126,22 @@ RSpec.describe UrlHash::Transform do
         expect(default_transform.decode('bVy2QH')).to eq(1)
       end
 
-      it 'should return nil for an invalid string' do
+      it 'should return nil for an invalid check' do
         expect(default_transform.decode('bVy2QX')).to be_nil
+      end
+
+      it 'should return nil for an invalid encoding but valid check' do
+        expect(default_transform.decode('CLEANJ')).to be_nil
+      end
+
+      it 'should decode the answer' do
+        expect(default_transform.decode('V8k4AH')).to eq(42)
+      end
+    end
+
+    context 'with a transcription error' do
+      it 'should decode the answer with a transcription error' do
+        expect(default_transform.decode('VBk4AH')).to eq(42)
       end
     end
   end
