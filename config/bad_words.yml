@@ -1,0 +1,14 @@
+# This is a list of bad words that should not appear in the
+# generated shortened urls.
+
+development:
+  - foo
+  - bar
+
+test:
+  - foo
+  - bar
+
+production:
+  - foo
+  - bar

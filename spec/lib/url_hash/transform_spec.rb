@@ -118,6 +118,29 @@ RSpec.describe UrlHash::Transform do
         expect(default_transform.encode(42)).to eq('V8k4AH')
       end
     end
+
+    context 'there is a bad word present' do
+      it 'should encode to something different' do
+        transform = default_transform
+        expect(transform.bad_words).to receive(:clean?)
+          .twice.and_return(false, true)
+
+        result = transform.encode(1)
+
+        expect(result).not_to eq('bVy2QH')
+      end
+
+      it 'should encode to something different with two bad word flags' do
+        transform = default_transform
+        expect(transform.bad_words).to receive(:clean?)
+          .at_least(3).and_return(false, false, true)
+
+        result = transform.encode(1)
+
+        expect(result).not_to eq('bVy2QH')
+        expect(result).not_to eq('Vy2s3X')
+      end
+    end
   end
 
   describe '#decode' do
@@ -136,6 +159,10 @@ RSpec.describe UrlHash::Transform do
 
       it 'should decode the answer' do
         expect(default_transform.decode('V8k4AH')).to eq(42)
+      end
+
+      it 'should decode a secondary generation resulted from bad words' do
+        expect(default_transform.decode('Vy2s3X')).to eq(1)
       end
     end
 

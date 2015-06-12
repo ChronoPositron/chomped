@@ -1,4 +1,5 @@
 require 'url_hash/cleanup'
+require 'url_hash/bad_words'
 require 'damm/algorithm'
 require 'hashids'
 
@@ -12,6 +13,7 @@ module UrlHash
     attr_reader :transcriptions
     attr_reader :cleanup
     attr_reader :checksum_algorithm
+    attr_reader :bad_words
 
     def initialize(salt, options = {})
       address_space = options[:address_space] || DEFAULT_ADDRESS_SPACE
@@ -21,6 +23,7 @@ module UrlHash
       @transcriptions = transcriptions
       @cleanup = UrlHash::Cleanup.new(address_space, transcriptions)
       @checksum_algorithm = Damm::Algorithm.new(address_space.size)
+      @bad_words = UrlHash::BadWords.new
       @hasher = Hashids.new(salt, MINIMUM_ENCODED_LENGTH - 1, @address_space)
     end
 
@@ -52,7 +55,15 @@ module UrlHash
 
     # Encode a given id into a checked, randomized string
     def encode(id)
-      add_check(@hasher.encode([id]))
+      result = add_check(@hasher.encode([id]))
+
+      i = 0
+      until bad_words.clean?(result)
+        result = add_check(@hasher.encode([id, i]))
+        i += 1
+      end
+
+      result
     end
 
     # Decode a given checked string into its id
