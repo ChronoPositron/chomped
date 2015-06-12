@@ -23,7 +23,8 @@ RSpec.describe Url, type: :model do
 
   describe '#to_param' do
     it 'should return a hash_url string' do
-      expect(Url.new(id: 1).to_param).to eq('1RjJRC')
+      expect(Rails.application.secrets).to receive(:hashids_salt).and_return('this is my salt')
+      expect(Url.new(id: 1).to_param).to eq('bVy2QH')
     end
   end
 
@@ -53,13 +54,15 @@ RSpec.describe Url, type: :model do
 
   describe '.decode' do
     it 'should return an id' do
-      expect(Url.decode('1RjJRC')).to eq(1)
+      expect(Rails.application.secrets).to receive(:hashids_salt).and_return('this is my salt')
+      expect(Url.decode('bVy2QH')).to eq(1)
     end
   end
 
   describe '.encode' do
     it 'should return a hash_url string' do
-      expect(Url.encode(1)).to eq('1RjJRC')
+      expect(Rails.application.secrets).to receive(:hashids_salt).and_return('this is my salt')
+      expect(Url.encode(1)).to eq('bVy2QH')
     end
   end
 end

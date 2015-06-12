@@ -89,13 +89,15 @@ RSpec.describe 'Urls', type: :request do
       end
 
       it 'returns a list with a single url' do
+        expect(Rails.application.secrets).to receive(:hashids_salt)
+          .at_least(:once).and_return('this is my salt')
         create(:url)
 
         get urls_path, format: :json
 
         expect(response_body.size).to eq(1)
-        expect(response_body[0]['url']).to eq('http://www.example.com/1RjJRC.json')
-        expect(response_body[0]['details']).to eq('http://www.example.com/urls/1RjJRC.json')
+        expect(response_body[0]['url']).to eq('http://www.example.com/bVy2QH.json')
+        expect(response_body[0]['details']).to eq('http://www.example.com/urls/bVy2QH.json')
         expect(response_body[0]).not_to have_key('views')
         expect(response_body[0]).not_to have_key('delete_token')
       end
