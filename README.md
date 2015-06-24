@@ -1,5 +1,9 @@
 # Chomped
-A link shortener
+A link shortener that:
+- Avoids characters commonly misidentified in printed text
+- Generates shortened URLs that differ by at least two characters
+- Supports a list of words that shouldn't be present in the shortened URL
+(and the addition of new words is allowed without breaking old URLs)
 
 ## Badges
 
@@ -11,7 +15,7 @@ A link shortener
 
 ## Status
 
-Initial development.
+Base backend is functional.
 
 ## Notes for developing
 
